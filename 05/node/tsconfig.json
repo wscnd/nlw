@@ -9,6 +9,7 @@
         "strict": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "noImplicitAny": true
     },
     "include": [
         "src"

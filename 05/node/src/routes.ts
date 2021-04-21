@@ -1,10 +1,10 @@
-import { Router } from "express";
-import { SettingsController } from "./controllers/SettingsController";
+import { Router } from 'express'
+import { SettingsController } from './controllers/SettingsController'
 
-const routes = Router();
+const routes = Router()
 
-const settingsController = new SettingsController();
+const settingsController = new SettingsController()
 
-routes.post("/settings", settingsController.create);
+routes.post('/settings', settingsController.create)
 
-export { routes };
+export { routes }

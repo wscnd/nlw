@@ -1,14 +1,15 @@
-import "reflect-metadata";
-import express from 'express';
-import "./database";
-import { routes } from "./routes";
+import 'reflect-metadata'
+import './database'
 
-const app = express();
+import express from 'express'
 
-app.use(express.json());
+import { routes } from './routes'
 
-app.use(routes);
+const app = express()
+app.use(express.json())
+app.use(routes)
 
-const PORT = 3333;
-
-app.listen(PORT, () => { console.log(`running at port ${PORT}`); });
+const PORT = 3333
+app.listen(PORT, () => {
+   console.log(`running at port ${PORT}`)
+})
