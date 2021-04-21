@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { SettingsController } from './controllers/SettingsController'
+import { SettingsController } from './resources/settings/settings.controllers'
 
 const routes = Router()
 

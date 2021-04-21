@@ -1,10 +1,8 @@
 import { Request, Response } from 'express'
-import { SettingsService } from '../services/SettingsService'
+import { SettingsService } from './settings.services'
 
 class SettingsController {
    async create(req: Request, res: Response): Promise<Response | void> {
-      console.log(req.body)
-
       if (!req.body) {
          return res.status(404).end()
       }
@@ -15,11 +13,14 @@ class SettingsController {
          return res.status(404).end()
       }
 
-      const settingsService = new SettingsService()
+      try {
+         const settingsService = new SettingsService()
+         const settings = await settingsService.create({ chat, username })
 
-      const settings = settingsService.create({ chat, username })
-
-      return res.json(settings)
+         return res.json(settings)
+      } catch (err) {
+         return res.status(400).json({ message: err.message })
+      }
    }
 }
 

@@ -1,6 +1,6 @@
 import { getCustomRepository } from 'typeorm'
-import { Setting } from '../entities/Setting'
-import { SettingsRepository } from '../repositories/SettingsRepository'
+import { Setting } from './settings.entity'
+import { SettingsRepository } from './settings.repository'
 
 interface ISettingsCreate {
    chat: boolean
@@ -11,11 +11,7 @@ class SettingsService {
    async create({ chat, username }: ISettingsCreate): Promise<Setting> {
       const settingsRepository = getCustomRepository(SettingsRepository)
 
-      const userAlreadyExists = await settingsRepository.findOne({
-         username
-      })
-
-      if (userAlreadyExists) {
+      if (settingsRepository.findOne({ username })) {
          throw new Error('User Already Exists')
       }
 
