@@ -18,11 +18,12 @@ class Setting {
     created_at!: Date;
 
     @UpdateDateColumn()
-    update_at!: Date;
+    updated_at!: Date;
 
     constructor() {
-        if (!this.id) {
-            this.id == uuid();
+        if (typeof this.id == "undefined") {
+            this.id = uuid();
+            console.log(this.id);
         }
     }
 }
