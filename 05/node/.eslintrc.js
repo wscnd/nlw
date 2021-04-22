@@ -11,6 +11,6 @@ module.exports = {
    ],
    rules: {
       'no-console': 0,
-      'prettier/prettier': 2
+      'prettier/prettier': 0
    }
 }

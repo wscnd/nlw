@@ -5,7 +5,6 @@ import {
    PrimaryColumn,
    UpdateDateColumn
 } from 'typeorm'
-import { v4 as uuid } from 'uuid'
 
 @Entity('settings')
 class Setting {
@@ -23,13 +22,6 @@ class Setting {
 
    @UpdateDateColumn()
    updated_at!: Date
-
-   constructor() {
-      if (typeof this.id == 'undefined') {
-         this.id = uuid()
-         console.log(this.id)
-      }
-   }
 }
 
 export { Setting }
