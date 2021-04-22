@@ -1,15 +1,8 @@
-import 'reflect-metadata'
-import './database'
-
-import express from 'express'
-
-import { routes } from './routes'
-
-const app = express()
-app.use(express.json())
-app.use(routes)
+import { http } from './http'
+import "./websocket/client"
 
 const PORT = 3333
-app.listen(PORT, () => {
+
+http.listen(PORT, () => {
    console.log(`running at port ${PORT}`)
 })

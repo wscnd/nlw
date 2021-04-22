@@ -7,7 +7,7 @@ import {
 } from 'typeorm'
 
 @Entity('settings')
-class Setting {
+class Setting{
    @PrimaryColumn()
    id!: string
 
@@ -24,4 +24,4 @@ class Setting {
    updated_at!: Date
 }
 
-export { Setting }
+export { Setting  }

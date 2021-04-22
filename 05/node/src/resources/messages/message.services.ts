@@ -32,6 +32,7 @@ class MessagesService {
 
       const messages = await this.messagesRepository.save(message)
 
+      console.log(`NEW MESSAGE\t${messages.id}\t${messages.text}`)
       return messages
    }
 
