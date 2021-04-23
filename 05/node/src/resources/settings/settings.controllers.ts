@@ -20,12 +20,22 @@ class SettingsController {
             settings = await settingsService.createOne({ chat, username })
             return res.json(settings)
          } else {
-            settings = await settingsService.updateOne({ username, chat })
-            return res.json(settings)
+            return res.json({ message: 'Please use PATCH on this endpoint' })
          }
       } catch (err) {
          return res.status(400).json({ message: err.message })
       }
+   }
+
+   async updateOne(req: Request, res: Response): Promise<Response> {
+      const { username } = req.params
+      const { chat } = req.body
+
+      const settingsService = new SettingsService()
+      const settings = await settingsService.updateOne({ username, chat })
+      console.log(settings)
+
+      return res.json(settings)
    }
 
    async findOne(req: Request, res: Response): Promise<Response> {

@@ -1,6 +1,7 @@
 import {
    getCustomRepository, //
-   Repository
+   Repository,
+   UpdateResult
 } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 
@@ -45,16 +46,24 @@ class SettingsService {
 
       return settings
    }
+
    async updateOne({
       username,
       chat
    }: {
       username: string
       chat: boolean
-   }): Promise<Setting | undefined> {
-      await this.settingsRepository.update({ username }, { chat })
+   }): Promise<UpdateResult> {
+      const updatedSettings = await this.settingsRepository
+         .createQueryBuilder()
+         .update(Setting)
+         .set({ chat })
+         .where('username = :username', {
+            username
+         })
+         .execute()
 
-      return this.findOne(username)
+      return updatedSettings
    }
 }
 
