@@ -1,9 +1,11 @@
-/* eslint-env node */
-
 module.exports = {
    root: true,
+   env: {
+      browser: true,
+      commonjs: true
+   },
    parser: '@typescript-eslint/parser',
-   plugins: ['@typescript-eslint', 'prettier'],
+   plugins: ['@typescript-eslint', 'prettier', 'html'],
    extends: [
       'eslint:recommended',
       'plugin:@typescript-eslint/recommended',

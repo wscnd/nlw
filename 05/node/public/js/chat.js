@@ -1,4 +1,4 @@
-/* eslint-env browser, node */
+/* global io Mustache */
 
 document.querySelector('#start_chat').addEventListener('click', () => {
    const socket = io()
@@ -24,6 +24,28 @@ document.querySelector('#start_chat').addEventListener('click', () => {
          } else {
             console.log(call)
          }
+      })
+   })
+
+   socket.on('client_list_all_messages', (messages) => {
+      const template_client = document.getElementById('message-user-template')
+         .innerHTML
+      const template_admin = document.getElementById('admin-template').innerHTML
+
+      messages.map((msg) => {
+         let template
+         let tag
+
+         msg.admin_id === null
+            ? ((template = template_client), (tag = 'message'))
+            : ((template = template_admin), (tag = 'message_admin'))
+
+         const render = Mustache.render(template, {
+            [tag]: msg.text,
+            email
+         })
+
+         document.getElementById('messages').innerHTML += render
       })
    })
 })

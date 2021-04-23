@@ -57,6 +57,11 @@ io.on('connection', (socket) => {
             await connectionsService.createOne({ ...connection })
          }
       }
+
       await messagesService.createOne({ user_id, text })
+
+      const allMessages = await messagesService.getMany(user_id)
+
+      socket.emit('client_list_all_messages', allMessages)
    })
 })
