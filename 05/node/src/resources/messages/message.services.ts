@@ -5,7 +5,7 @@ import { Message } from './messages.entity'
 import { MessagesRepository } from './messages.repository'
 
 interface ISettingsCreate {
-   admin_id?: string
+   admin_id?: any
    text: string
    user_id: string
    id?: string

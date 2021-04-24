@@ -16,10 +16,10 @@ class Connection {
    id!: string
 
    @Column()
-   admin_id?: string
+   socket_id?: string
 
    @Column()
-   socket_id!: string
+   admin_id!: string
 
    @JoinColumn({ name: 'user_id' })
    @ManyToOne(() => User)

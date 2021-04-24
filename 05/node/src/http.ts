@@ -24,8 +24,8 @@ app.get('/pages/client', (req, res) => {
    return res.render('html/client.html')
 })
 
-io.on('connection', (socket: Socket) => {
-   console.log('OPENED\t\t', socket.id)
+app.get('/pages/admin', (req, res) => {
+   return res.render('html/admin.html')
 })
 
 export { http, io }

@@ -32,8 +32,11 @@ class UsersService {
       return user
    }
 
-   async findByEmail(email: string): Promise<User | undefined> {
-      const user = await this.usersRepository.findOne({ email })
+   async findOne(object: {
+      email?: string
+      id?: string
+   }): Promise<User | undefined> {
+      const user = await this.usersRepository.findOne({ ...object })
 
       return user
    }

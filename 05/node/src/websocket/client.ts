@@ -8,7 +8,14 @@ interface IParams {
    email: string
 }
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
+   console.log(
+      'OPENED\t\t',
+      socket.id,
+      'from',
+      socket.handshake.headers.referer
+   )
+
    const connectionsService = new ConnectionsService()
    const usersService = new UsersService()
    const messagesService = new MessagesService()
@@ -18,7 +25,7 @@ io.on('connection', (socket) => {
 
       const socket_id = socket.id
       const { text, email } = params
-      const userExists = await usersService.findByEmail(email)
+      const userExists = await usersService.findOne({ email })
 
       let user_id
 
@@ -29,17 +36,20 @@ io.on('connection', (socket) => {
 
          const user = await usersService.createOne({ email })
 
+         user_id = user.id
+
          await connectionsService.createOne({
             socket_id,
-            user_id: user.id
+            user_id
          })
-         user_id = user.id
       } else {
          console.log(`REGISTERED! \t${userExists.email}`)
 
          user_id = userExists.id
 
-         const connection = await connectionsService.findOne(userExists.id)
+         let connection = await connectionsService.findOne({
+            user_id: userExists.id
+         })
 
          if (!connection) {
             console.log(`!CONNECTION \t${userExists.email}`)
@@ -50,11 +60,25 @@ io.on('connection', (socket) => {
             })
          } else {
             console.log(
-               `CONNECTION! \n\tid: ${connection.id}\n\told_s_id: ${connection.socket_id} `
+               `CONNECTION! \n\tid: ${connection.id}\n\told_s_id: ${connection.admin_id} `
             )
-            connection.socket_id = socket_id
-            console.log(`\tnew_s_id: ${connection.socket_id} `)
-            await connectionsService.createOne({ ...connection })
+
+            await connectionsService.updateOneNew({
+               set: {
+                  socket_id
+               },
+               where: {
+                  condition: 'user_id = :user_id',
+                  object: { ['user_id']: user_id }
+               }
+            })
+
+            connection = await connectionsService.findOne({
+               user_id: userExists.id
+            })
+            if (connection) {
+               console.log(`\tnew_s_id: ${connection.admin_id} `)
+            }
          }
       }
 
@@ -63,5 +87,52 @@ io.on('connection', (socket) => {
       const allMessages = await messagesService.getMany(user_id)
 
       socket.emit('client_list_all_messages', allMessages)
+
+      const allConnectionsWithoutAdmin = await connectionsService.findMany({
+         where: { admin_id: null, relations: ['user'] }
+      })
+
+      io.emit('admin_list_all_users', allConnectionsWithoutAdmin)
+   })
+
+   socket.on('admin_list_messages', async (params) => {
+      const { admin_socket_id, user_id } = params
+
+      await connectionsService.updateOneNew({
+         set: {
+            admin_id: admin_socket_id
+         },
+         where: {
+            condition: 'user_id = :user_id',
+            object: { ['user_id']: user_id }
+         }
+      })
+   })
+
+   socket.on('client_send_to_admin', async (params) => {
+      const { text, socket_id } = params
+
+      console.log('received params', params)
+
+      const connection = await connectionsService.findOne({
+         socket_id: socket_id
+      })
+
+      if (connection) {
+         const message = await messagesService.createOne({
+            text,
+            user_id: connection.user_id
+         })
+
+         if (connection.admin_id) {
+            console.log('we have admin?')
+            console.log(connection.admin_id)
+            const user = await usersService.findOne({ id: message.user_id })
+            io.to(connection.admin_id).emit('admin_receive_message', {
+               message,
+               user
+            })
+         }
+      }
    })
 })
