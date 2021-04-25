@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "target": "esnext",
     "jsx": "preserve",
-    "outDir": "lib",
-    "strictFunctionTypes": true,
-    "esModuleInterop": true,
-    "strict": true,
     "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
+    "module": "esnext",
     "noImplicitAny": true,
+    "outDir": "lib",
+    "strict": true,
+    "strictFunctionTypes": true,
+    "target": "esnext",
     "lib": [
       "dom",
       "dom.iterable",

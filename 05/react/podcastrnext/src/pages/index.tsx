@@ -1,3 +1,3 @@
-export default function Home(){
-  return <h1>Hello!</h1>;
+export default function Home(): JSX.Element {
+   return <h1>Index</h1>
 }

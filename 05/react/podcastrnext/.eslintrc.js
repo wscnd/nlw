@@ -28,6 +28,7 @@ module.exports = {
       'prettier'
    ],
    rules: {
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
       'no-console': 0,
       'prettier/prettier': 0,
       'react/react-in-jsx-scope': 'off',
