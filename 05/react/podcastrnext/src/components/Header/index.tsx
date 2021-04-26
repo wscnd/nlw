@@ -6,6 +6,7 @@ export function Header() {
    const createDate = format(new Date(), 'EEEEEE, d MMMM', {
       locale: ptBR
    })
+
    return (
       <header className={styles.headerContainer}>
          <img src="/logo.svg" alt="Podcastr" />
