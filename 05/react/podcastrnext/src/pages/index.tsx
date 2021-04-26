@@ -1,12 +1,20 @@
-import { GetStaticProps } from 'next'
-import Image from 'next/image'
-import { format, parseISO } from 'date-fns'
+import {
+   format, //
+   parseISO
+} from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
-import { api } from '../services/api'
-import { convertDurationToTimeString } from '../utils/convertDurationToTimeString'
-import styles from './home.module.scss'
+import { GetStaticProps } from 'next'
+import Head from 'next/head'
+import Image from 'next/image'
+import Link from 'next/link'
 
-interface Episode {
+import { api } from '../services/api'
+import {
+   convertDurationToTimeString //
+} from '../utils/convertDurationToTimeString'
+import styles from './index.module.scss'
+
+export interface IEpisode {
    id: string
    title: string
    members: string
@@ -14,13 +22,13 @@ interface Episode {
    description: string
 }
 
-type EpisodeProps = Episode & {
+type EpisodeProps = IEpisode & {
    publishedAt: string
    duration: string
    url: string
 }
 
-type EpisodeData = Episode & {
+type EpisodeData = IEpisode & {
    published_at: string
    file: {
       url: string
@@ -32,7 +40,7 @@ type Data = {
    data: EpisodeData[]
 }
 
-type HomeProps = {
+type Props = {
    latestEpisodes: Array<EpisodeProps>
    otherEpisodes: Array<EpisodeProps>
 }
@@ -40,69 +48,74 @@ type HomeProps = {
 export default function Home({
    latestEpisodes,
    otherEpisodes
-}: HomeProps): JSX.Element {
+}: Props): JSX.Element {
    return (
       <div className={styles.homepage}>
+         <Head>
+            <title>Home | Podcastr</title>
+         </Head>
          <section className={styles.latestEpisodes}>
             <h2>Últimos lançamentos</h2>
             <ul>
-               {latestEpisodes.map((epi) => {
-                  return (
-                     <li key={epi.id}>
-                        <Image
-                           width={192}
-                           height={192}
-                           objectFit="cover"
-                           src={epi.thumbnail}
-                           alt={epi.title}
-                        />
+               {latestEpisodes.map((epi) => (
+                  <li key={epi.id}>
+                     <Image
+                        width={192}
+                        height={192}
+                        objectFit="cover"
+                        src={epi.thumbnail}
+                        alt={epi.title}
+                     />
 
-                        <div className={styles.episodeDetails}>
-                           <a href={epi.url}>{epi.title}</a>
-                           <p>{epi.members}</p>
-                           <span>{epi.publishedAt}</span>
-                           <span>{epi.duration}</span>
-                        </div>
+                     <div className={styles.episodeDetails}>
+                        <Link href={`/episode/${epi.id}`}>
+                           <a>{epi.title}</a>
+                        </Link>
+                        <p>{epi.members}</p>
+                        <span>{epi.publishedAt}</span>
+                        <span>{epi.duration}</span>
+                     </div>
 
-                        <button type="button">
-                           <img src="/play-green.svg" alt="Play Episode" />
-                        </button>
-                     </li>
-                  )
-               })}
+                     <button type="button">
+                        <img src="/play-green.svg" alt="Play Episode" />
+                     </button>
+                  </li>
+               ))}
             </ul>
          </section>
          <section className={styles.allEpisodes}>
             <h2>Todos os episódios</h2>
             <table cellSpacing={0}>
                <thead>
-                  <th></th>
-                  <th>Podcast</th>
-                  <th>Integrantes</th>
-                  <th>Data</th>
-                  <th>Duracao</th>
-                  <th></th>
+                  <tr>
+                     <th></th>
+                     <th>Podcast</th>
+                     <th>Integrantes</th>
+                     <th>Data</th>
+                     <th>Duracao</th>
+                     <th></th>
+                  </tr>
                </thead>
 
                <tbody>
-                  {otherEpisodes.map((episode) => {
+                  {otherEpisodes.map((epi) => {
                      return (
-                        <tr key={episode.id}>
+                        <tr key={epi.id}>
                            <td style={{ width: 72 }}>
                               <Image
                                  width={120}
                                  height={120}
-                                 src={episode.thumbnail}
-                                 alt={episode.title}
+                                 src={epi.thumbnail}
+                                 alt={epi.title}
                                  objectFit="cover"
                               />
                            </td>
                            <td>
-                              <a href={episode.url}>{episode.title}</a>
+                              <a href={`/episode/${epi.id}`}>{epi.title}</a>
                            </td>
-                           <td>{episode.members}</td>
-                           <td style={{ width: 100 }}>{episode.publishedAt}</td>
-                           <td>{episode.duration}</td>
+                           <td>{epi.members}</td>
+                           <td style={{ width: 100 }}>{epi.publishedAt}</td>
+                           <td>{epi.duration}</td>
                            <td>
                               <button type="button">
                                  <img
@@ -141,8 +154,7 @@ export const getStaticProps: GetStaticProps = async () => {
             locale: ptBR
          }),
          duration: convertDurationToTimeString(Number(episode.file.duration)),
-         url: episode.file.url,
-         description: episode.description
+         url: episode.file.url
       }
    })
    const latestEpisodes = episodes.slice(0, 2)

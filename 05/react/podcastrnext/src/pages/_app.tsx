@@ -1,11 +1,7 @@
 import '../styles/global.scss'
 
 import type { NextComponentType } from 'next'
-import type {
-   AppContext, //
-   AppInitialProps,
-   AppProps
-} from 'next/app'
+import type { AppContext, AppInitialProps, AppProps } from 'next/app'
 
 import { Header } from '../components/Header'
 import { Player } from '../components/Player'
@@ -17,11 +13,11 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppProps> = ({
 }: AppProps) => {
    return (
       <div className={styles.wrapper}>
+         <Player />
          <main>
             <Header />
             <Component {...pageProps} />
          </main>
-         <Player />
       </div>
    )
 }

@@ -1,4 +1,4 @@
-import styles from './styles.module.scss'
+import styles from './Player.module.scss'
 export function Player() {
    return (
       <div className={styles.playerContainer}>
