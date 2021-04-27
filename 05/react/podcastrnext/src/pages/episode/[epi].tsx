@@ -1,10 +1,10 @@
 import {
-   format,
+   format, //
    parseISO
 } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
 import {
-   GetStaticPaths,
+   GetStaticPaths, //
    GetStaticProps
 } from 'next'
 import Image from 'next/image'
@@ -12,11 +12,11 @@ import Link from 'next/link'
 import { ParsedUrlQuery } from 'querystring'
 
 import { api } from '../../services/api'
-import {
-   convertDurationToTimeString
-} from '../../utils/convertDurationToTimeString'
+import { convertDurationToTimeString } from '../../utils/convertDurationToTimeString'
 import { IEpisode } from '../index'
 import styles from './episode.module.scss'
+
+// import { useRouter } from 'next/router'
 
 type Epi = IEpisode & {
    publishedAt: string
@@ -30,6 +30,13 @@ type Props = {
 }
 
 export default function Episode({ episode }: Props) {
+   // ** USED WHEN FALLBACK = TRUE
+   // const router = useRouter()
+   //
+   // if (router.isFallback) {
+   //    return <p>Loading</p>
+   // }
+
    return (
       <div className={styles.episode}>
          <div className={styles.thumbnailContainer}>
@@ -65,8 +72,22 @@ export default function Episode({ episode }: Props) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+   const { data } = await api.get('episodes', {
+      params: {
+         _limit: 2,
+         _sort: 'published_at',
+         _order: 'desc'
+      }
+   })
+
+   const paths = data.map((episodes: Epi) => {
+      return {
+         params: { epi: episodes.id }
+      }
+   })
+
    return {
-      paths: [],
+      paths,
       fallback: 'blocking'
    }
 }

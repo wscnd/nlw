@@ -7,6 +7,8 @@ import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useContext } from 'react'
+import { PlayerContext } from '../context/PlayerContext'
 
 import { api } from '../services/api'
 import {
@@ -49,12 +51,16 @@ export default function Home({
    latestEpisodes,
    otherEpisodes
 }: Props): JSX.Element {
+   const { play } = useContext(PlayerContext)
+
    return (
       <div className={styles.homepage}>
          <Head>
             <title>Home | Podcastr</title>
          </Head>
          <section className={styles.latestEpisodes}>
+            {/* <pre>{player.currentEpisodeIndex}</pre>
+         <pre>{player.episodeList}</pre> */}
             <h2>Últimos lançamentos</h2>
             <ul>
                {latestEpisodes.map((epi) => (
@@ -76,7 +82,7 @@ export default function Home({
                         <span>{epi.duration}</span>
                      </div>
 
-                     <button type="button">
+                     <button type="button" onClick={() => play(epi)}>
                         <img src="/play-green.svg" alt="Play Episode" />
                      </button>
                   </li>
@@ -117,7 +123,7 @@ export default function Home({
                            <td style={{ width: 100 }}>{epi.publishedAt}</td>
                            <td>{epi.duration}</td>
                            <td>
-                              <button type="button">
+                              <button type="button" onClick={() => play(epi)}>
                                  <img
                                     src="/play-green.svg"
                                     alt="Play Episode"
