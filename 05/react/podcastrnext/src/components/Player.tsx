@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { useContext } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { PlayerContext } from '../context/PlayerContext'
 import styles from './Player.module.scss'
 
@@ -7,8 +7,33 @@ import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 
 export function Player() {
-   const { currentEpisodeIndex, episodeList } = useContext(PlayerContext)
+   const audioRef = useRef<HTMLAudioElement>(null)
+
+   const {
+      currentEpisodeIndex,
+      episodeList,
+      isPlaying,
+      togglePlay,
+      setPlayingState
+   } = useContext(PlayerContext)
+
+   useEffect(() => {
+      console.log(audioRef)
+   }, [])
+
    const episode = episodeList[currentEpisodeIndex]
+
+   useEffect(() => {
+      if (!audioRef.current) {
+         return
+      }
+
+      if (isPlaying) {
+         audioRef.current.play()
+      } else {
+         audioRef.current.pause()
+      }
+   }, [isPlaying])
 
    return (
       <div className={styles.playerContainer}>
@@ -50,7 +75,16 @@ export function Player() {
                </div>
                <span>00:00</span>
             </div>
-
+            {episode ? (
+               <audio
+                  src={episode.url}
+                  autoPlay
+                  ref={audioRef}
+                  onPlay={() => setPlayingState(true)}
+                  onPause={() => setPlayingState(false)}>
+                  <track kind="captions" />
+               </audio>
+            ) : null}
             <div className={styles.buttons}>
                <button type="button" disabled={!episode}>
                   <img src="/shuffle.svg" alt="Shuffle" />
@@ -61,8 +95,13 @@ export function Player() {
                <button
                   type="button"
                   className={styles.playButton}
-                  disabled={!episode}>
-                  <img src="/play.svg" alt="Play" />
+                  disabled={!episode}
+                  onClick={() => togglePlay()}>
+                  {isPlaying ? (
+                     <img src="/pause.svg" alt="Pause" />
+                  ) : (
+                     <img src="/play.svg" alt="Play" />
+                  )}
                </button>
                <button type="button" disabled={!episode}>
                   <img src="/play-next.svg" alt="Play Next" />
