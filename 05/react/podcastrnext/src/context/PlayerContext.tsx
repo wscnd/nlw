@@ -12,18 +12,11 @@ type Episode = IEpisode & {
 }
 
 type PlayerContextData = {
-   // episodeList: Episode[]
-   // currentEpisodeIndex: number
+   setPlayingState: {
+      (change: { to: boolean }): void
+      (change: { toggle: boolean }): void
+   }
    isPlaying: boolean
-   // playNext: () => void
-   // playPrevious: () => void
-   setPlayingState: ({
-      state,
-      toggle
-   }: {
-      state?: boolean
-      toggle?: boolean
-   }) => void
    playList: (arg0: Episode[], arg1: number) => void
    play: {
       hasNext: boolean
@@ -54,7 +47,6 @@ export const PlayerContextProvider = ({ children }: ChildrenProps) => {
 
    useEffect(() => {
       setEpisode(episodeList[currentEpisodeIndex])
-
       console.log('current', currentEpisodeIndex)
    }, [isPlaying, currentEpisodeIndex])
 
@@ -65,28 +57,12 @@ export const PlayerContextProvider = ({ children }: ChildrenProps) => {
       previous: () => setCurrentEpisodeIndex((current) => current - 1)
    }
 
-   function setPlayingState({ state = false, toggle = false }) {
-      const setTo = toggle ? !isPlaying : state
+   // function setPlayingState(change: { to: boolean }): void
+   // function setPlayingState(change: { toggle: boolean }): void
+   function setPlayingState({ to = false, toggle = false }) {
+      const setTo = toggle ? !isPlaying : to
       setIsPlaying(setTo)
    }
-
-   // function playNext() {
-   //    const nextEpisode = currentEpisodeIndex + 1
-   //    if (nextEpisode >= episodeList.length) {
-   //       return
-   //    }
-   //    setCurrentEpisodeIndex((current) => current + 1)
-   //    console.log('next')
-   // }
-
-   // function playPrevious() {
-   //    console.log('previous')
-   //    const previousEpisode = currentEpisodeIndex - 1
-   //    if (previousEpisode < 0) {
-   //       return
-   //    }
-   //    setCurrentEpisodeIndex((current) => current - 1)
-   // }
 
    const data = {
       episode,

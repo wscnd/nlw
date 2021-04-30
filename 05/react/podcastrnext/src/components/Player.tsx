@@ -10,8 +10,6 @@ export function Player() {
    const audioRef = useRef<HTMLAudioElement>(null)
 
    const {
-      // currentEpisodeIndex,
-      // episodeList,
       episode,
       isPlaying,
       setPlayingState,
@@ -66,7 +64,7 @@ export function Player() {
                      />
                   ) : (
                      <div className={styles.emptySlider} />
-                  )}
+)}
                </div>
                <span>00:00</span>
             </div>
@@ -75,8 +73,8 @@ export function Player() {
                   src={episode.url}
                   autoPlay
                   ref={audioRef}
-                  onPlay={() => setPlayingState({ state: true })}
-                  onPause={() => setPlayingState({ state: false })}>
+                  onPlay={() => setPlayingState({ to: true })}
+                  onPause={() => setPlayingState({ to: false })}>
                   <track kind="captions" />
                </audio>
             ) : null}
