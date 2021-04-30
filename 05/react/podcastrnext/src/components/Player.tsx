@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { useContext, useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { PlayerContext } from '../context/PlayerContext'
 import styles from './Player.module.scss'
 
@@ -10,18 +10,13 @@ export function Player() {
    const audioRef = useRef<HTMLAudioElement>(null)
 
    const {
-      currentEpisodeIndex,
-      episodeList,
+      // currentEpisodeIndex,
+      // episodeList,
+      episode,
       isPlaying,
-      togglePlay,
-      setPlayingState
+      setPlayingState,
+      play
    } = useContext(PlayerContext)
-
-   useEffect(() => {
-      console.log(audioRef)
-   }, [])
-
-   const episode = episodeList[currentEpisodeIndex]
 
    useEffect(() => {
       if (!audioRef.current) {
@@ -80,8 +75,8 @@ export function Player() {
                   src={episode.url}
                   autoPlay
                   ref={audioRef}
-                  onPlay={() => setPlayingState(true)}
-                  onPause={() => setPlayingState(false)}>
+                  onPlay={() => setPlayingState({ state: true })}
+                  onPause={() => setPlayingState({ state: false })}>
                   <track kind="captions" />
                </audio>
             ) : null}
@@ -89,21 +84,29 @@ export function Player() {
                <button type="button" disabled={!episode}>
                   <img src="/shuffle.svg" alt="Shuffle" />
                </button>
-               <button type="button" disabled={!episode}>
+               <button
+                  type="button"
+                  disabled={!episode || !play.hasPrevious}
+                  onClick={() => play.previous()}
+               >
                   <img src="/play-previous.svg" alt="Play Previous" />
                </button>
                <button
                   type="button"
                   className={styles.playButton}
                   disabled={!episode}
-                  onClick={() => togglePlay()}>
+                  onClick={() => setPlayingState({ toggle: true })}>
                   {isPlaying ? (
                      <img src="/pause.svg" alt="Pause" />
                   ) : (
                      <img src="/play.svg" alt="Play" />
                   )}
                </button>
-               <button type="button" disabled={!episode}>
+               <button
+                  type="button"
+                  // onClick={() => playNext()}
+                  disabled={!episode || !play.hasNext}
+                  onClick={() => play.next()}>
                   <img src="/play-next.svg" alt="Play Next" />
                </button>
                <button type="button" disabled={!episode}>

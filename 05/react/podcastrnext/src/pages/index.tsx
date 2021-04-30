@@ -51,7 +51,9 @@ export default function Home({
    latestEpisodes,
    otherEpisodes
 }: Props): JSX.Element {
-   const { play } = useContext(PlayerContext)
+   const { playList } = useContext(PlayerContext)
+   const episodeList = [...latestEpisodes, ...otherEpisodes]
+
 
    return (
       <div className={styles.homepage}>
@@ -63,7 +65,7 @@ export default function Home({
          <pre>{player.episodeList}</pre> */}
             <h2>Últimos lançamentos</h2>
             <ul>
-               {latestEpisodes.map((epi) => (
+               {latestEpisodes.map((epi, epiIndex) => (
                   <li key={epi.id}>
                      <Image
                         width={192}
@@ -82,7 +84,9 @@ export default function Home({
                         <span>{epi.duration}</span>
                      </div>
 
-                     <button type="button" onClick={() => play(epi)}>
+                     <button
+                        type="button"
+                        onClick={() => playList(episodeList, epiIndex)}>
                         <img src="/play-green.svg" alt="Play Episode" />
                      </button>
                   </li>
@@ -104,7 +108,7 @@ export default function Home({
                </thead>
 
                <tbody>
-                  {otherEpisodes.map((epi) => {
+                  {otherEpisodes.map((epi, epiIndex) => {
                      return (
                         <tr key={epi.id}>
                            <td style={{ width: 72 }}>
@@ -123,7 +127,14 @@ export default function Home({
                            <td style={{ width: 100 }}>{epi.publishedAt}</td>
                            <td>{epi.duration}</td>
                            <td>
-                              <button type="button" onClick={() => play(epi)}>
+                              <button
+                                 type="button"
+                                 onClick={() =>
+                                    playList(
+                                       episodeList,
+                                       epiIndex + latestEpisodes.length
+                                    )
+                                 }>
                                  <img
                                     src="/play-green.svg"
                                     alt="Play Episode"
